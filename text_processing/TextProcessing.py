@@ -30,7 +30,6 @@ class TextProcessing(Process):
                 dataFrame[columnItem] = self.applyRegex(dataFrame, column = columnItem)
                 dataFrame[columnItem] = self.filterWordsByLength(dataFrame, column = columnItem)
                 dataFrame[columnItem] = self.lemmatize(dataFrame, columnItem)
-                #dataFrame[columnItem] = self.stemmer(dataFrame, columnItem)
                 dataFrame[columnItem] = self.remove_stop_words(dataFrame, columnItem)
                 dataFrame[columnItem] = dataFrame[columnItem].map(lambda x: x.lower())
 

@@ -32,11 +32,11 @@ class TextHandle():
             
             start = time.time()
             SIZE = len(self.data_filter)
-            batch_size =  int(SIZE / os.cpu_count())
+            batch_size =  int(SIZE / (os.cpu_count() / 2))
             process_list = []
             
             print(f'Lotes: {batch_size}')
-            print(f'Processos a serem criados: {os.cpu_count()}')
+            print(f'Processos a serem criados: {(os.cpu_count() / 2)}')
             previous = 0
 
             for sequence in range(batch_size, SIZE, batch_size):
