@@ -1,2 +1,4 @@
-tinydb
-prettytable
+spacy
+pandas
+nltk
+python -m spacy download pt_core_news_sm
