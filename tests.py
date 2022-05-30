@@ -1,15 +1,10 @@
 #Test your code here
-from text_processing.TextHandler import TextHandle
-from text_processing.TextProcessing import TextProcessing
+from text_processing.TextHandler import TextHandler
 
 if __name__ == '__main__':
     
-    #process = TextProcessing()
-    #process.start()
-    #process.join()
-    
-    text = TextHandle()
+    text = TextHandler()
     print('--------SEQUENCIAL--------------')
     text.handle_single_processing()
-    print('-------THREAD-------------------')
+    print('-------PARALELO-------------------')
     text.handle_batch_processing()

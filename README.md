@@ -1,6 +1,6 @@
 # Parallel Text Processing
 
-Using concurrent Processes to improve time processing for a large amount of text data.
+Using concurrent Processes to improve processing time for a large amount of text data.
 
 
 # How to run

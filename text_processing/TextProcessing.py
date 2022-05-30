@@ -1,5 +1,5 @@
+import pt_core_news_sm
 import spacy
-from threading import Thread
 import re
 import nltk
 from nltk.stem import RSLPStemmer
@@ -13,34 +13,41 @@ class TextProcessing(Process):
 
     data_filter = None
     pID =  os.getpid()
+    nlp = pt_core_news_sm.load()
+
+    def __init__(self, lock, args) -> None:
+        self.lock = lock
+        self.args = args
+
 
     def run(self):
         self.log_task_id('Processo iniciado!')
-        self.data_filter = self.preproccess_data_frame(self.data_filter)
+        self.proccess_data_frame(self.data_filter)
         self.log_task_id('Processo finalizado!')
 
     def join(self):
         Process.join(self)
+        print('Encerrando')
         return self.data_filter
 
-    def preproccess_data_frame(self, dataFrame, targetColumns = ['PEDIDO']):
+    def proccess_data_frame(self, dataFrame, targetColumns = ['PEDIDO']):
+        global data_frame
         if(not dataFrame.empty):
             for columnItem in targetColumns:
                 dataFrame[columnItem] = dataFrame[columnItem].map(lambda x: x.lower())
-                dataFrame[columnItem] = self.applyRegex(dataFrame, column = columnItem)
-                dataFrame[columnItem] = self.filterWordsByLength(dataFrame, column = columnItem)
+                dataFrame[columnItem] = self.apply_regex(dataFrame, column = columnItem)
+                dataFrame[columnItem] = self.filter_words_by_length(dataFrame, column = columnItem)
                 dataFrame[columnItem] = self.lemmatize(dataFrame, columnItem)
+                dataFrame[columnItem] = self.stemmer(dataFrame, columnItem)
                 dataFrame[columnItem] = self.remove_stop_words(dataFrame, columnItem)
                 dataFrame[columnItem] = dataFrame[columnItem].map(lambda x: x.lower())
 
-                dfReturn = dataFrame.dropna(subset=targetColumns, axis=0) #remover dps
-                #dfReturn.to_csv(f'tmp/perguntasProcessadas{self.thread_id}.csv')
-                return dfReturn
-
-        return None
+            lock.acquire()
+            data_frame.append(dataFrame)
+            lock.release()
 
 
-    def applyRegex(self, dataFrame, column):
+    def apply_regex(self, dataFrame, column):
         dfSize = len(dataFrame)
         coluna_tmp = [0] * dfSize
         for i in range(dfSize):
@@ -61,7 +68,7 @@ class TextProcessing(Process):
             coluna_tmp[i] = re.sub(r'([/\"-.,;:º@!?&%1234567890])', '', str(coluna_tmp[i]))
         return coluna_tmp
 
-    def filterWordsByLength(self, dataFrame, column, length = 3):
+    def filter_words_by_length(self, dataFrame, column, length = 3):
         dfSize = len(dataFrame)
         coluna_tmp = [0] * dfSize
         for i in range(dfSize):
@@ -77,10 +84,10 @@ class TextProcessing(Process):
     def lemmatize(self, dataFrame, columnName):
 
         #self.log_task_id('Aplicando Lemmatização')
-        nlp = spacy.load('pt_core_news_sm')
+        
         lemmaWords = []
         for pedido in dataFrame[columnName]:
-            doc = nlp(''.join(str(item) for item in pedido))
+            doc = self.nlp(''.join(str(item) for item in pedido))
             temp = ''
             for token in doc:
                 temp = temp + ' ' + token.lemma_
@@ -88,6 +95,22 @@ class TextProcessing(Process):
 
         #self.log_task_id('Lemmatização concluída')
         return lemmaWords
+
+    def stemmer(self, dataFrame, columnName):
+
+        stemmer = RSLPStemmer()
+        tam_length = len(dataFrame)
+        coluna_tmp = [0] * tam_length
+        for i in range(tam_length):
+            doc = self.nlp(str(dataFrame.iloc[i][columnName]))
+            tokens = doc.text.split()
+            temp = ""
+            for token in tokens:
+                if token != "nan":
+                    temp = temp + " " + stemmer.stem(token)
+
+            coluna_tmp[i] = temp.strip()
+        return coluna_tmp
 
 
     def remove_stop_words(self, dataFrame, columnName):
