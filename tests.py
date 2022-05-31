@@ -12,7 +12,3 @@ if __name__ == '__main__':
     print('--------EXECUÇÃO SEQUENCIAL--------------')
     sequencial = SingleTextHandler(data_frame)
     sequencial.handle_single_processing()
-    
-    print('-------EXECUÇÃO PARALELA-------------------')
-    paralelo = ParallelTextHandler(data_frame)
-    paralelo.handle_batch_processing()

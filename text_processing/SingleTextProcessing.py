@@ -15,9 +15,9 @@ class SingleTextProcessing():
     nlp = pt_core_news_sm.load()
 
     def run(self):
-        self.log_task_id('Processo iniciado!')
+        self.log_task_id('Sequencial iniciado!')
         data_frame = self.proccess_data_frame(self.data_filter)
-        self.log_task_id('Processo finalizado!')
+        self.log_task_id('Sequencial finalizado!')
         return data_frame
 
     def proccess_data_frame(self, dataFrame, targetColumns = ['PEDIDO']):

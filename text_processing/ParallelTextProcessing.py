@@ -9,7 +9,7 @@ import os
 
 
 
-class ParallelTextProcessing(threading.Thread):
+class ParallelTextProcessing(Process):
     """Classe responsável por fazer o pré-processamento e geração de tokens lemmatizados para um DataFrame"""
 
     data_filter = None
@@ -18,6 +18,7 @@ class ParallelTextProcessing(threading.Thread):
 
     def __init__(self) -> None:
         super().__init__()
+        self.result = None
 
 
     def run(self):
@@ -27,7 +28,7 @@ class ParallelTextProcessing(threading.Thread):
 
     def join(self):
         threading.Thread.join(self)
-        return self.data_filter
+        #return self.result
 
     def proccess_data_frame(self, dataFrame, targetColumns = ['PEDIDO']):
         if(not dataFrame.empty):
@@ -40,7 +41,7 @@ class ParallelTextProcessing(threading.Thread):
                 dataFrame[columnItem] = self.remove_stop_words(dataFrame, columnItem)
                 dataFrame[columnItem] = dataFrame[columnItem].map(lambda x: x.lower())
             
-            self.data_filter = dataFrame
+            #self.result = dataFrame
 
 
     def apply_regex(self, dataFrame, column):

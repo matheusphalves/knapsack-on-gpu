@@ -26,7 +26,7 @@ class ParallelTextHandler():
             print(f'Linhas por lote: {batch_size}')
             print(f'Processos a serem criados: {int(os.cpu_count())}')
             previous = 0
-            
+
             for sequence in range(batch_size, SIZE, batch_size):
 
                 text_process = ParallelTextProcessing()
@@ -44,7 +44,6 @@ class ParallelTextHandler():
             data_frame = pd.DataFrame()
             for process in process_list: 
                 process.join()
-                #data_frame = data_frame.append(process.join())
             
             tempo = time.time() - start
             print(f'Tempo paralelo: {tempo}')
