@@ -21,6 +21,7 @@ class ParallelTextHandler():
             
             
             SIZE = len(self.data_filter)
+            
             batch_size =  int(SIZE / (os.cpu_count()))
             process_list = []
             
@@ -31,15 +32,14 @@ class ParallelTextHandler():
             stopwords = nltk.corpus.stopwords.words('portuguese')
             queue_result = multiprocessing.Manager().Queue()
             start = time.time()
-            for sequence in range(batch_size, SIZE, batch_size):
+            for sequence in range(batch_size, SIZE+1, batch_size):
 
                 text_process = ParallelTextProcessing(nlp=nlp, stopwords=stopwords, queue_result = queue_result)
-
                 if(sequence + batch_size <= SIZE):
                     text_process.data_filter = self.data_filter[previous:sequence]
-                    
                 else:
-                    text_process.data_filter = self.data_filter[previous:SIZE] 
+                    text_process.data_filter = self.data_filter[previous:] 
+                    
 
                 previous = sequence
                 text_process.start()
@@ -52,7 +52,6 @@ class ParallelTextHandler():
 
             result_df = pd.DataFrame()
             for process in process_list:
-                print('Obtendo resultados de um processo')
                 result_df = result_df.append(queue_result.get(timeout = 5))
 
 
