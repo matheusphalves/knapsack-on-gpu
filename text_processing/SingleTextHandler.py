@@ -15,7 +15,7 @@ class SingleTextHandler():
 
 
     def handle_single_processing(self):
-            
+            print("Iniciando execução sequencial!")
             text_process = SingleTextProcessing()
             text_process.data_filter = self.data_filter
             start = time.time()

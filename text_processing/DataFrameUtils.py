@@ -11,7 +11,7 @@ class DataFrameUtils():
     def read_data(fileName = 'BaseDadosNew', extension = "csv"):  
             try:
                 filepath = f'{fileName}.{extension}'
-                data = pd.read_csv(filepath, sep=',', skipinitialspace = True)
+                data = pd.read_csv(filepath, sep=',', skipinitialspace = True, usecols = ['PEDIDO'])
                 print(f'Quantidade de registros encontrados: {len(data)}')
                 data = data.dropna()
                 print(f'Quantidade de registros válidos carregados: {len(data)}')
