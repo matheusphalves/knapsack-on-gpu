@@ -52,7 +52,7 @@ class ParallelTextHandler():
 
             result_df = pd.DataFrame()
             for process in process_list:
-                result_df = result_df.append(queue_result.get(timeout = 5))
+                result_df = result_df.append(queue_result.get())
 
 
             DataFrameUtils.save_data_frame(data_frame=result_df, execution_type='paralela')
