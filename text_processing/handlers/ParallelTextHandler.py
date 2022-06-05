@@ -1,11 +1,11 @@
 import multiprocessing
-import time
+from datetime import datetime
 import os
 import pandas as pd
 import nltk
 import pt_core_news_sm
-from text_processing.ParallelTextProcessing import ParallelTextProcessing
-from text_processing.DataFrameUtils import DataFrameUtils
+from text_processing.workers.ParallelTextProcessing import ParallelTextProcessing
+from text_processing.utils.DataFrameLoader import DataFrameLoader
 
 class ParallelTextHandler():    
 
@@ -31,7 +31,7 @@ class ParallelTextHandler():
             nlp = pt_core_news_sm.load()
             stopwords = nltk.corpus.stopwords.words('portuguese')
             queue_result = multiprocessing.Manager().Queue()
-            start = time.time()
+            start = datetime.now()
             for sequence in range(batch_size, SIZE+1, batch_size):
 
                 text_process = ParallelTextProcessing(nlp=nlp, stopwords=stopwords, queue_result = queue_result)
@@ -47,12 +47,12 @@ class ParallelTextHandler():
             
             for process in process_list: 
                 process.join()
-            tempo = time.time() - start
-            print(f'Tempo paralelo: {tempo}')
+            tempo = datetime.now() - start
+            print(f'Tempo paralelo: {tempo.seconds} (s)')
 
             result_df = pd.DataFrame()
             for process in process_list:
                 result_df = result_df.append(queue_result.get())
 
 
-            DataFrameUtils.save_data_frame(data_frame=result_df, execution_type='paralela')
+            DataFrameLoader.save_data_frame(data_frame=result_df, execution_type='paralela')

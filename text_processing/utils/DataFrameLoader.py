@@ -3,12 +3,12 @@ import pandas as pd
 import os
 
 
-class DataFrameUtils():
-    """Classe possui métodos utilitários para manipulação de DataFrames"""
+class DataFrameLoader():
+    """Classe possui métodos utilitários para criação e persistência de DataFrames"""
 
     #IMPORTAÇÃO DA BASE DE DADOS 
     @staticmethod
-    def read_data(fileName = 'BaseDadosNew', extension = "csv"):  
+    def read_data(fileName = 'BaseDados', extension = "csv"):  
             try:
                 filepath = f'{fileName}.{extension}'
                 data = pd.read_csv(filepath, sep=',', skipinitialspace = True, usecols = ['PEDIDO'])
