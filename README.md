@@ -80,7 +80,7 @@ project/
 
 
 
-# Parallel conceptr walkthough
+# Parallel concept walkthough
 
 ![Multiprocessing workers](https://snipboard.io/ylpY2s.jpg)
 
